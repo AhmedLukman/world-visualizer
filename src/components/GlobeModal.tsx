@@ -11,33 +11,21 @@ import {
   ModalContent,
   ModalFooter,
 } from "@nextui-org/react";
-import { GlobeMethods } from "react-globe.gl";
 import { Feature } from "./MyGlobe";
 import CountryInfo from "./CountryInfo";
 
 const GlobeModal = ({
   screenshot,
-  setScreenshot,
   isOpen,
   onClose,
-  globeEl,
-  setCountryData,
-  countryData,
+  countryData
 }: {
   screenshot: string | null;
-  setScreenshot: React.Dispatch<React.SetStateAction<string | null>>;
   isOpen: boolean;
   countryData: Feature | undefined
   onClose: () => void;
-  globeEl: React.MutableRefObject<GlobeMethods | undefined>;
-  setCountryData: React.Dispatch<React.SetStateAction<Feature | undefined>>;
 }) => {
-  const handleCloseModal = () => {
-    globeEl.current!.controls().autoRotate = true;
-    setCountryData(undefined);
-    setScreenshot(null);
-    onClose();
-  };
+
 
   return (
     <Modal
@@ -45,7 +33,7 @@ const GlobeModal = ({
       isDismissable={false}
       size="5xl"
       isOpen={isOpen}
-      onClose={handleCloseModal}
+      onClose={onClose}
     >
       <ModalContent>
         {(onClose) => (

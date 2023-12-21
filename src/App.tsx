@@ -14,7 +14,7 @@ const World = () => {
         </button>
       </div>
 
-      {!isToggled && <MyGlobe isToggled={isToggled} />}
+      {!isToggled && <MyGlobe />}
 
       {isToggled && <p>List View</p>}
     </>

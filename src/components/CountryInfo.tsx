@@ -6,7 +6,7 @@ import {
   faMaximize,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody, Skeleton } from "@nextui-org/react";
 import { Feature } from "./MyGlobe";
 
 const CountryInfo = ({
@@ -25,7 +25,12 @@ const CountryInfo = ({
             style={{
               backgroundImage: `url('${screenshot}')`,
             }}
-          />
+          >
+            <Skeleton
+              isLoaded={!!screenshot}
+              className="w-full h-full rounded-lg"
+            />
+          </div>
           <div className="lg:basis-4/6 space-y-5 p-0 lg:p-4 pt-0">
             <div className="flex-col space-y-3 lg:flex-row p-3 rounded-md">
               <div className="lg:basis-1/2">
