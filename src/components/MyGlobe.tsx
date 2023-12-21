@@ -2,25 +2,27 @@ import { getVal } from "../lib/utils";
 import { countriesData } from "../countries";
 import { useColorScale } from "../hooks/useColorScale";
 import { renderToString } from "react-dom/server";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { GlobeMethods } from "react-globe.gl"; // Import the Feature type from react-globe.gl
 import Globe from "react-globe.gl";
+import GlobeModal from "./GlobeModal";
+import { useDisclosure } from "@nextui-org/react";
+import useScreenshot from "../hooks/useScreenshot";
+import useRotate from "../hooks/useRotate";
 
-const MyGlobe = ({
-  takeScreenshot,
-  captureRef,
-  globeEl,
-  click,
-  onOpen,
-  setClick,
-}: {
-  takeScreenshot: () => void;
-  captureRef: React.MutableRefObject<null>;
-  globeEl: React.MutableRefObject<GlobeMethods | undefined>;
-  click: Feature | undefined;
-  onOpen: () => void;
-  setClick: React.Dispatch<React.SetStateAction<Feature | undefined>>;
-}) => {
+const MyGlobe = ({isToggled}: {isToggled: boolean}) => {
+   const [countryData, setCountryData] = useState<Feature | undefined>();
+   const { isOpen, onOpen, onClose } = useDisclosure();
+const onCloseModal = () => {
+  setHoverD(null)
+  onClose()
+}
+   const globeEl: React.MutableRefObject<GlobeMethods | undefined> = useRef();
+
+   const { screenshot, takeScreenshot, setScreenshot, captureRef } =
+     useScreenshot();
+   useRotate({ isToggled, countryData, globeEl });
+
   const colorScale = useColorScale();
 
   const [hoverD, setHoverD] = useState<object | null>();
@@ -31,7 +33,7 @@ const MyGlobe = ({
   ) => {
     const featurePolygon = polygon as Feature;
     globeEl.current!.controls().autoRotate = false;
-    setClick(featurePolygon);
+    setCountryData(featurePolygon);
     onOpen();
     takeScreenshot();
   };
@@ -46,34 +48,43 @@ const MyGlobe = ({
         polygonsData={countriesData.features.filter(
           (d) => d.properties.ISO_A2 !== "AQ"
         )}
-        polygonAltitude={(d) => (d === hoverD || d === click ? 0.12 : 0.06)} //If hovered, raises the country
+        polygonAltitude={(d) =>
+          d === hoverD || d === countryData ? 0.12 : 0.06
+        } //If hovered, raises the country
         polygonCapColor={(d) =>
-          d === hoverD || d === click ? "steelblue" : colorScale(getVal(d))
+          d === hoverD || d === countryData
+            ? "steelblue"
+            : colorScale(getVal(d))
         } //If hovered or clicked, changes the country color
         polygonSideColor={() => "rgba(0, 100, 0, 0.15)"}
         polygonStrokeColor={() => "#111"}
         //If hovered, show a tooltip on the hovered country
         polygonLabel={(obj: object) => {
           const d = (obj as { properties: Properties }).properties;
-          const Component1 = () => (
+          const HoverComponent = () => (
             <div
               data-html2canvas-ignore="true"
-              className="text-black bg-white p-2 rounded-md hidden lg:block"
+              className="text-black bg-white p-2 rounded-md"
             >
               {d.ADMIN}
             </div>
           );
-          const component = <Component1 />;
+          const component = <HoverComponent />;
           const stringcomp = renderToString(component);
           return stringcomp;
         }}
         onPolygonClick={handlePolygonClick}
         onPolygonHover={setHoverD} //When hovered, passes the polygon object to the setHovered function
         polygonsTransitionDuration={300}
-        onGlobeClick={() => {
-          globeEl.current!.controls().autoRotate = true;
-          setClick(undefined);
-        }}
+      />
+      <GlobeModal
+        countryData={countryData}
+        globeEl={globeEl}
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        screenshot={screenshot}
+        setCountryData={setCountryData}
+        setScreenshot={setScreenshot}
       />
     </div>
   );

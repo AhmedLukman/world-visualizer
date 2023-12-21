@@ -3,16 +3,17 @@ import { GlobeMethods } from "react-globe.gl";
 
 const useRotate = ({
   isToggled,
-  click,
+  countryData,
   globeEl,
 }: {
   isToggled: boolean;
-  click: any;
+  countryData: unknown;
   globeEl: React.MutableRefObject<GlobeMethods | undefined>;
 }) => {
   useEffect(() => {
-    if (!isToggled && !click) globeEl.current!.controls().autoRotate = true;
-  }, [isToggled, click, globeEl]);
+    if (!isToggled && !countryData)
+      globeEl.current!.controls().autoRotate = true;
+  }, [isToggled, countryData, globeEl]);
 };
 
 export default useRotate
