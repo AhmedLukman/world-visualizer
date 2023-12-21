@@ -1,10 +1,7 @@
 import { GlobeMethods } from "react-globe.gl";
 import { useState, useRef } from "react";
 
-import {
-  NextUIProvider,
-  useDisclosure,
-} from "@nextui-org/react";
+import { NextUIProvider, useDisclosure } from "@nextui-org/react";
 
 import useRotate from "./hooks/useRotate";
 import useScreenshot from "./hooks/useScreenshot";
@@ -19,7 +16,6 @@ const World = () => {
 
   const globeEl: React.MutableRefObject<GlobeMethods | undefined> = useRef();
 
-
   const { screenshot, takeScreenshot, setScreenshot, captureRef } =
     useScreenshot();
   useRotate({ isToggled, click, globeEl });
@@ -32,10 +28,25 @@ const World = () => {
         </button>
       </div>
       {!isToggled && click && (
-       <GlobeModal click={click} globeEl={globeEl} isOpen={isOpen} onClose={onClose} screenshot={screenshot} setClick={setClick} setScreenshot={setScreenshot}/>
+        <GlobeModal
+          click={click}
+          globeEl={globeEl}
+          isOpen={isOpen}
+          onClose={onClose}
+          screenshot={screenshot}
+          setClick={setClick}
+          setScreenshot={setScreenshot}
+        />
       )}
       {!isToggled && (
-        <MyGlobe captureRef={captureRef} click={click} globeEl={globeEl} onOpen={onOpen} setClick={setClick} takeScreenshot={takeScreenshot}/>
+        <MyGlobe
+          captureRef={captureRef}
+          click={click}
+          globeEl={globeEl}
+          onOpen={onOpen}
+          setClick={setClick}
+          takeScreenshot={takeScreenshot}
+        />
       )}
       {isToggled && <p>List View</p>}
     </>
@@ -51,53 +62,3 @@ const App = () => {
 };
 
 export default App;
-
-
-// import React, { useState } from "react";
-// import { ScreenCapture } from "react-screen-capture";
-
-// const App = () => {
-//   const [screenCapture, setScreenCapture] = useState("");
-
-//   const handleScreenCapture = (screenCapture) => {
-//     setScreenCapture(screenCapture);
-//   };
-
-//   const handleSave = () => {
-//     const screenCaptureSource = screenCapture;
-//     const downloadLink = document.createElement("a");
-//     const fileName = "react-screen-capture.png";
-
-//     downloadLink.href = screenCaptureSource;
-//     downloadLink.download = fileName;
-//     downloadLink.click();
-//   };
-
-//   return (
-//     <ScreenCapture onEndCapture={handleScreenCapture}>
-//       {({ onStartCapture }) => (
-//         <div>
-//           <button onClick={onStartCapture}> Capture </button>
-//           <p>
-//             {" "}
-//             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
-//             distinctio exercitationem a tempore delectus ducimus necessitatibus
-//             dolor voluptatum aut est quaerat aspernatur, vero quod aperiam odio.
-//             Exercitationem distinctio in voluptates?{" "}
-//           </p>
-//           <center>
-//             <img src={screenCapture} alt="react-screen-capture" />
-//             <p>
-//               {" "}
-//               {screenCapture && (
-//                 <button onClick={handleSave}> Download </button>
-//               )}{" "}
-//             </p>
-//           </center>
-//         </div>
-//       )}
-//     </ScreenCapture>
-//   );
-// };
-
-// export default App;
